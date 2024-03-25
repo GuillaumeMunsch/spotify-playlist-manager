@@ -1,5 +1,11 @@
+import LikedTitles from "../../components/LikedTitles";
+
 const DashboardView = () => {
-  return <div>DashboardView</div>;
+  return (
+    <div>
+      <LikedTitles />
+    </div>
+  );
 };
 
 export default DashboardView;

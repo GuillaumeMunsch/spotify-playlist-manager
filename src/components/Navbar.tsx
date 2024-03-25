@@ -5,17 +5,19 @@ import { useUserProfile } from "../contexts/UserProfileContext";
 const navbarStyle: React.CSSProperties = {
   backgroundColor: theme.colors.accent[500],
   minHeight: "70px",
+  padding: "8px",
+  borderRadius: "4px",
 };
 
 const Navbar = () => {
-  // const {sdk} = useSpotifySDK();
   const { userProfile } = useUserProfile();
+
   if (!userProfile) return null;
   return (
-    <Flex style={navbarStyle} direction="column">
-      <Flex direction="column">
-        <Link href="#">Dashboard</Link>
-        <Link href="#">About</Link>
+    <Flex style={navbarStyle} justify="between" align="center" direction="row">
+      <Flex direction="row" gap="4">
+        <Link href="/app/dashboard">Dashboard</Link>
+        <Link href="/app/about">About</Link>
       </Flex>
       <Avatar src={userProfile.images[0].url} fallback="A" />
     </Flex>

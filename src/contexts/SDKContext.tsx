@@ -25,12 +25,12 @@ export const useSDK = () => {
 };
 
 export const useSpotifySDK = () => {
-  const navigate = useNavigate();
-
   const context = useSDK();
+
   if (!context?.sdk) {
-    navigate("/");
-    return { sdk: {} as SpotifyApi }; // 👀
+    return {
+      sdk: null,
+    };
   }
 
   return {
