@@ -6,7 +6,7 @@ const RootLayout = () => {
   const navigate = useNavigate();
 
   if (sdkContext?.sdk) {
-    navigate("/dashboard");
+    navigate("/app/dashboard");
   }
   return (
     <div>

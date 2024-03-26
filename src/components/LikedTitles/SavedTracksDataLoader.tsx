@@ -1,8 +1,46 @@
 import { useEffect, useState } from "react";
 import { useSpotifySDK } from "../../contexts/SDKContext";
 import SavedTracksContainer from "./SavedTracksContainer";
-import { SavedTrack } from "@spotify/web-api-ts-sdk";
+import { MaxInt, Page, SavedTrack, SpotifyApi } from "@spotify/web-api-ts-sdk";
 import Loading from "../Loading";
+
+const fetchAllCurrentUserSavedTracks = async ({
+  sdk,
+  total,
+  chunkSize = 50,
+}: {
+  sdk: SpotifyApi;
+  total: number;
+  chunkSize?: MaxInt<50>;
+}) => {
+  const fetchTracksRequests: Promise<Page<SavedTrack>>[] = [];
+  for (
+    let remainingTracksAmount = total;
+    remainingTracksAmount > 0;
+    remainingTracksAmount = remainingTracksAmount - chunkSize
+  ) {
+    const tracksAmountToFetch =
+      remainingTracksAmount > chunkSize
+        ? chunkSize
+        : (remainingTracksAmount as MaxInt<50>);
+
+    fetchTracksRequests.push(
+      sdk.currentUser.tracks.savedTracks(
+        tracksAmountToFetch,
+        fetchTracksRequests.length * chunkSize
+      )
+    );
+  }
+
+  const pages = await Promise.all(fetchTracksRequests);
+
+  const allCurrentUserSavedTracks = pages.reduce<SavedTrack[]>(
+    (allItems, page) => [...allItems, ...page.items],
+    []
+  );
+
+  return allCurrentUserSavedTracks;
+};
 
 const useFetchCurrentUserSavedTracks = () => {
   const { sdk } = useSpotifySDK();
@@ -12,17 +50,13 @@ const useFetchCurrentUserSavedTracks = () => {
   useEffect(() => {
     if (sdk) {
       setIsFetching(true);
-      sdk?.currentUser.tracks
-        .savedTracks()
-        .then((tracks) => {
-          setSavedTracks(tracks.items);
-        })
-        .catch((err) => {
-          console.log("Err", err);
-        })
-        .finally(() => {
-          setIsFetching(false);
-        });
+      fetchAllCurrentUserSavedTracks({
+        sdk,
+        total: 100,
+      })
+        .then((tracks) => setSavedTracks(tracks))
+        .catch((err) => console.log("Err", err))
+        .finally(() => setIsFetching(false));
     }
   }, [sdk]);
 
@@ -34,7 +68,6 @@ const useFetchCurrentUserSavedTracks = () => {
 
 const SavedTracksDataLoader = () => {
   const { isFetching, savedTracks } = useFetchCurrentUserSavedTracks();
-  console.log("isFetching", isFetching);
 
   if (isFetching) return <Loading />;
 
