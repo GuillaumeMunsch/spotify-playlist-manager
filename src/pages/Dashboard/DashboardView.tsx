@@ -1,9 +1,9 @@
-import LikedTitles from "../../components/LikedTitles";
+import SavedTracks from "../../components/SavedTracks";
 
 const DashboardView = () => {
   return (
     <div>
-      <LikedTitles />
+      <SavedTracks />
     </div>
   );
 };

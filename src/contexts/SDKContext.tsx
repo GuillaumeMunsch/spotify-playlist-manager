@@ -1,16 +1,15 @@
 import { SpotifyApi } from "@spotify/web-api-ts-sdk";
 import { createContext, useState, useContext, PropsWithChildren } from "react";
-import { useNavigate } from "react-router-dom";
 
 // Create the context
 const SDKContext = createContext<{
-  sdk: SpotifyApi | null;
+  sdk?: SpotifyApi;
   setSDK: (sdk: SpotifyApi) => void;
 } | null>(null);
 
 // Create a provider component
 export const SDKProvider = ({ children }: PropsWithChildren) => {
-  const [sdk, setSDK] = useState<SpotifyApi | null>(null);
+  const [sdk, setSDK] = useState<SpotifyApi>();
 
   return (
     <SDKContext.Provider value={{ sdk, setSDK }}>

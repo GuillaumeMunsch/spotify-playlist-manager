@@ -6,13 +6,12 @@ import Loading from "../Loading";
 
 const fetchAllCurrentUserSavedTracks = async ({
   sdk,
-  total,
   chunkSize = 50,
 }: {
   sdk: SpotifyApi;
-  total: number;
   chunkSize?: MaxInt<50>;
 }) => {
+  const total = (await sdk.currentUser.tracks.savedTracks(1)).total;
   const fetchTracksRequests: Promise<Page<SavedTrack>>[] = [];
   for (
     let remainingTracksAmount = total;
@@ -52,7 +51,6 @@ const useFetchCurrentUserSavedTracks = () => {
       setIsFetching(true);
       fetchAllCurrentUserSavedTracks({
         sdk,
-        total: 100,
       })
         .then((tracks) => setSavedTracks(tracks))
         .catch((err) => console.log("Err", err))
@@ -70,6 +68,7 @@ const SavedTracksDataLoader = () => {
   const { isFetching, savedTracks } = useFetchCurrentUserSavedTracks();
 
   if (isFetching) return <Loading />;
+  console.log("savedTracks", savedTracks);
 
   return <SavedTracksContainer savedTracks={savedTracks} />;
 };
