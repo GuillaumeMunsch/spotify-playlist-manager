@@ -1,3 +1,3 @@
-import CreatePlaylistFormContainer from "./CreatePlaylistFormContainer";
+import CreatePlaylistFormDataLoader from "./CreatePlaylistFormDataLoader";
 
-export default CreatePlaylistFormContainer;
+export default CreatePlaylistFormDataLoader;

@@ -1,8 +1,8 @@
-import { Avatar, Flex, Link } from "@radix-ui/themes";
+import { Avatar, Button, Flex, Link } from "@radix-ui/themes";
 import theme from "../theme";
 import { useEffect, useState } from "react";
 import { UserProfile } from "@spotify/web-api-ts-sdk";
-import { useSDK } from "../contexts/SDKContext";
+import { useSDK, useSpotifySDK } from "../contexts/SDKContext";
 
 const navbarStyle: React.CSSProperties = {
   backgroundColor: theme.colors.accent[500],
@@ -31,6 +31,7 @@ const useFetchProfile = () => {
 
 const Navbar = () => {
   const { userProfile } = useFetchProfile();
+  const { sdk } = useSpotifySDK();
 
   if (!userProfile) return null;
   return (
@@ -43,7 +44,17 @@ const Navbar = () => {
           About
         </Link>
       </Flex>
-      <Avatar src={userProfile.images[0].url} fallback="A" />
+      <Flex align="center" gapX="2">
+        <Button
+          onClick={async () => {
+            const logoutRes = await sdk?.logOut();
+            console.log("logoutRes", logoutRes);
+          }}
+        >
+          Logout
+        </Button>
+        <Avatar src={userProfile.images[0].url} fallback="A" />
+      </Flex>
     </Flex>
   );
 };

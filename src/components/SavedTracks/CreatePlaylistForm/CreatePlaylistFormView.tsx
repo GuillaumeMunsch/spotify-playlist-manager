@@ -4,25 +4,28 @@ import {
   Flex,
   TextField,
   Checkbox,
+  Box,
 } from "@radix-ui/themes";
-import { Field, Form, Label, Submit } from "@radix-ui/react-form";
+import { Field, Form, Label } from "@radix-ui/react-form";
 import { useForm } from "react-hook-form";
+import { CreatePlaylistFormValues } from "./CreatePlaylistFormContainer";
 
 type Props = {
   isOpen: boolean;
+  closeModal: () => void;
+  onSubmit: (values: CreatePlaylistFormValues) => void;
 };
 
-type FormValues = {
-  playlistName: string;
-  playlistFolder?: string;
-  shouldRemoveTracksFromLikedTitles: boolean;
-};
-
-const CreatePlaylistFormView = ({ isOpen }: Props) => {
-  const { register, handleSubmit } = useForm<FormValues>();
-
+const CreatePlaylistFormView = ({ isOpen, onSubmit, closeModal }: Props) => {
+  const { register, formState, handleSubmit } =
+    useForm<CreatePlaylistFormValues>({
+      defaultValues: {
+        shouldRemoveTracksFromLikedTitles: true,
+      },
+    });
+  const { errors } = formState;
   return (
-    <AlertDialog.Root open={true}>
+    <AlertDialog.Root open={isOpen}>
       <AlertDialog.Content maxWidth="450px">
         <AlertDialog.Title>Revoke access</AlertDialog.Title>
         <AlertDialog.Description size="2">
@@ -30,11 +33,7 @@ const CreatePlaylistFormView = ({ isOpen }: Props) => {
           existing sessions will be expired.
         </AlertDialog.Description>
 
-        <Form
-          onSubmit={handleSubmit((values) => {
-            console.log("Values", values);
-          })}
-        >
+        <Form onSubmit={handleSubmit(onSubmit)}>
           <Flex direction="column" gapY="2" my="4">
             <Field name="playlistName">
               <Label>
@@ -42,27 +41,26 @@ const CreatePlaylistFormView = ({ isOpen }: Props) => {
                 <TextField.Root
                   {...register("playlistName", { required: true })}
                 />
-              </Label>
-            </Field>
-            <Field name="playlistFolder">
-              <Label>
-                Playlist folder
-                <TextField.Root
-                  {...register("playlistFolder", { required: true })}
-                />
+                {errors.playlistName && (
+                  <Box style={{ color: "red" }}>Name required</Box>
+                )}
               </Label>
             </Field>
             <Field name="shouldRemoveTracksFromLikedTitles">
               <Label>
-                <Checkbox {...register("shouldRemoveTracksFromLikedTitles")} />
-                Should remove from Liked Titles
+                <Flex gapX="2" align="center">
+                  <Checkbox
+                    {...register("shouldRemoveTracksFromLikedTitles")}
+                  />
+                  <Box>Should remove from Liked Titles</Box>
+                </Flex>
               </Label>
             </Field>
           </Flex>
 
           <Flex gap="3" mt="4" justify="end">
             <AlertDialog.Cancel>
-              <Button variant="soft" color="gray">
+              <Button onClick={closeModal} variant="soft" color="gray">
                 Cancel
               </Button>
             </AlertDialog.Cancel>

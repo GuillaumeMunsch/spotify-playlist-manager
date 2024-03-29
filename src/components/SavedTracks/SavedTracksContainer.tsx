@@ -9,6 +9,7 @@ export type SelectableTrack = {
   date: Dayjs;
   imageUrl?: string;
   id: string;
+  uri: string;
 };
 
 type Props = {
@@ -24,6 +25,7 @@ const SavedTracksContainer = ({ savedTracks }: Props) => {
         isSelected: false,
         name: track.name,
         imageUrl: track.album.images[0].url ?? undefined,
+        uri: track.uri,
       }))
       .reverse()
   );
@@ -36,20 +38,8 @@ const SavedTracksContainer = ({ savedTracks }: Props) => {
     );
   };
 
-  const createPlaylistFromTracks = ({
-    playlistName,
-    tracks,
-  }: {
-    tracks: SelectableTrack;
-    playlistName: string;
-  }) => {};
-
   return (
-    <SavedTracksView
-      tracks={tracks}
-      selectFirstBatch={selectFirstBatch}
-      createPlaylistFromTracks={createPlaylistFromTracks}
-    />
+    <SavedTracksView tracks={tracks} selectFirstBatch={selectFirstBatch} />
   );
 };
 

@@ -1,16 +1,18 @@
-import { Outlet, useNavigate } from "react-router-dom";
-import { SpotifyApi, UserProfile } from "@spotify/web-api-ts-sdk";
-import { useEffect, useState } from "react";
+import { Outlet } from "react-router-dom";
+import { SpotifyApi } from "@spotify/web-api-ts-sdk";
+import { useEffect } from "react";
 import { useSDK } from "../contexts/SDKContext";
-import { useUserProfile } from "../contexts/UserProfileContext";
 import Loading from "../components/Loading";
-import { sliderPropDefs } from "@radix-ui/themes/props";
 
 const scopes = [
   "user-read-private",
   "user-read-email",
   "user-library-modify",
   "user-library-read",
+  "playlist-read-private",
+  "playlist-read-collaborative",
+  "playlist-modify-private",
+  "playlist-modify-public",
 ];
 
 const useAuthenticate = () => {

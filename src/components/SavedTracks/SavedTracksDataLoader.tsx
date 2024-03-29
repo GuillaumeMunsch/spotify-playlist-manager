@@ -68,7 +68,6 @@ const SavedTracksDataLoader = () => {
   const { isFetching, savedTracks } = useFetchCurrentUserSavedTracks();
 
   if (isFetching) return <Loading />;
-  console.log("savedTracks", savedTracks);
 
   return <SavedTracksContainer savedTracks={savedTracks} />;
 };

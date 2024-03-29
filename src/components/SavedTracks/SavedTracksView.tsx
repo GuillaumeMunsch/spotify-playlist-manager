@@ -7,17 +7,9 @@ import CreatePlaylistForm from "./CreatePlaylistForm";
 type Props = {
   tracks: SelectableTrack[];
   selectFirstBatch: () => void;
-  createPlaylistFromTracks: (props: {
-    tracks: SelectableTrack;
-    playlistName: string;
-  }) => void;
 };
 
-const SavedTracksView = ({
-  tracks,
-  selectFirstBatch,
-  createPlaylistFromTracks,
-}: Props) => {
+const SavedTracksView = ({ tracks, selectFirstBatch }: Props) => {
   const [isCreatePlaylistFormOpen, setIsCreatePlaylistFormOpen] =
     useState(false);
   const numberOfSelectedTracks = tracks.filter(
@@ -61,7 +53,11 @@ const SavedTracksView = ({
           ))}
         </Table.Body>
       </Table.Root>
-      <CreatePlaylistForm isOpen={isCreatePlaylistFormOpen} />
+      <CreatePlaylistForm
+        tracks={tracks.filter(({ isSelected }) => isSelected)}
+        isOpen={isCreatePlaylistFormOpen}
+        closeModal={() => setIsCreatePlaylistFormOpen(false)}
+      />
     </Box>
   );
 };
